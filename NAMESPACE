@@ -1,0 +1,3 @@
+#' @useDynLib ARSPI
+#' @importFrom stats runif qnorm
+#' @export arspi_estimate

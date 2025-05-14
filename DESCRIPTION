@@ -1,0 +1,16 @@
+Package: ARSPI
+Type: Package
+Title: ARSPI - A Tool for Estimating ARSPI and Drought Characteristics
+Version: 0.1.0
+Authors@R: person("Soham", "Ghosh", email = "phd2001161004@iiti.ac.in", role = c("aut", "cre"))
+Description: This package estimates ARSPI (AutoRegressive Standardized Precipitation Index) 
+    and drought characteristics, including mild, moderate, severe, and extreme drought events based on ARSPI.
+License: MIT + file LICENSE
+Encoding: UTF-8
+RoxygenNote: 7.3.2
+Imports:
+    R2jags,
+    stats
+Suggests:
+    testthat
+VignetteBuilder: knitr
