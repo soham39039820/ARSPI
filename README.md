@@ -18,3 +18,29 @@ install.packages("devtools")
 
 # Install ARSPI package from GitHub
 devtools::install_github("soham39039820/ARSPI")
+
+## Usage
+
+After installing the **ARSPI** package, you can use it to estimate the ARSPI and analyze drought characteristics as follows:
+
+### Example Usage
+
+```R
+# Load the ARSPI package
+library(ARSPI)
+
+# Example rainfall data (monthly rainfall in mm)
+rainfall_data <- c(100, 120, 110, 95, 130, 140, 160, 180, 150, 130, 110, 100)
+
+# Estimate ARSPI values
+arspi_values <- arspi_estimate(rainfall_data)
+
+# View ARSPI values
+print(arspi_values)
+
+# Classify drought events
+drought_classification <- classify_drought(arspi_values)
+
+# View drought classification
+print(drought_classification)
+
