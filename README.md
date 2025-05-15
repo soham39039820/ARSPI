@@ -37,11 +37,9 @@ arspi_values <- arspi_estimate(rainfall_data)
 
 # View ARSPI values
 print(arspi_values)
-```
 
 # Classify drought events
 drought_classification <- classify_drought(arspi_values)
 
-# View drought classification
 print(drought_classification)
-
+```
