@@ -99,7 +99,7 @@ This package is released under the MIT License.
 
 ### References
 
-For more information on the four-parameter Beta distribution and its applications, please refer to the following publication:
+For more information on the AutoRegressive Standardized Precipitation Index (ARSPI), please refer to the following publication:
 
 - **Paper Title**: *ARSPI: An R Package for Calculating AutoRegressive Standardized Precipitation Index and Analyzing Drought Characteristics*
 - **Authors**: Soham Ghosh and Sujay Mukhoti.
