@@ -4,7 +4,7 @@
 
 ## Features
 
-- **Estimate ARSPI**: Calculate the ARSPI values using monthly rainfall data.
+- **Calculate ARSPI**: Calculate the ARSPI values using monthly rainfall data.
 - **Drought Classification**: Classify drought events based on the ARSPI values, such as mild, moderate, severe, and extreme.
 - **Drought Analysis**: Provide detailed statistics and visualizations of drought characteristics, including event duration and severity.
 
