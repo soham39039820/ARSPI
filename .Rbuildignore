@@ -1,3 +1,5 @@
 ^ARSPI\.Rproj$
 ^\.Rproj\.user$
+^\.Rhistory$
+^\.git$
 ^\.github$

@@ -1,64 +1,55 @@
-model{
+model {
 
-	pi<-3.141
-	#c<-100
-	
-	
-	isr0[1]~dbern(p[1])
-	#p[1]~dbeta(mm,nn)
-	logit(p[1])<-alp/(1-phi)
-	
-	mu[1]<-beta[1]/(1-beta[2])
-	
-	sig.r[1]<-sig/(1-beta[2]^2)
-	Prec[1]<-1/(sig.r[1]^2)
-	
-	r[1]~dlnorm(mu[1],Prec[1])
-	
-	y[1]<-(isr0[1])+(1-isr0[1])*r[1]
-	
-	for(t in 2:T){
-	
-		isr0[t]~dbern(p[t])
-		#p[t]~dbeta(mm,nn)	
-		logit(p[t])=alp+phi*(p[t-1])
-	
-		mu[t]<-(1-isr0[t])*(beta[1]+beta[2]*log(r[t-1]))
-		sig.r[t]<-(1-isr0[t]+0.001)*sig    #(isr0[t]+1/c)*sig
-		Prec[t]<-1/(sig.r[t]^2)
-		
-		r[t]~dlnorm(mu[t],Prec[t])
-		y[t]<-isr0[t]+(1-isr0[t])*r[t]
-		}
-		sig<-1/sqrt(tau2)
-		tau2~dgamma(df1,df2)
-		df1~dexp(0.1)
-		df2~dexp(0.1)	
-	
-	
-#	Priors:
-    
-	beta[1]~dnorm(0,tau2.beta)
-	beta[2]~dunif(-0.99,0.99)
-	
-	alp~dnorm(0,.25)
-	phi~dunif(-0.99,0.99)
-	
-	
-	#mm~dexp(0.1)
-	#nn~dexp(0.1)
-	
-	sig.beta<-1/sqrt(tau2.beta)
-	tau2.beta~dgamma(nu1,nu2)
-	
-	nu1~dexp(0.1)
-	nu2~dexp(0.1)	
+  pi <- 3.141
 
+  # Likelihood for first observation
+  isr0[1] ~ dbern(p[1])
+  logit(p[1]) <- alp / (1 - phi)
 
-# Predictive distribution:
+  mu[1] <- beta[1] / (1 - beta[2])
+  sig.r[1] <- sig / (1 - beta[2]^2)
+  Prec[1] <- 1 / (sig.r[1]^2)
 
-	for(t in 1:T){
-		rP[t]~dlnorm(mu[t],Prec[t])
-		yP[t]<-isr0[t]+(1-isr0[t])*rP[t]
-		}
+  r[1] ~ dlnorm(mu[1], Prec[1])
+  y[1] <- isr0[1] + (1 - isr0[1]) * r[1]
+
+  # Time series model for t = 2 to T
+  for (t in 2:T) {
+    isr0[t] ~ dbern(p[t])
+    logit(p[t]) <- alp + phi * (p[t - 1])
+
+    mu[t] <- (1 - isr0[t]) * (beta[1] + beta[2] * log(r[t - 1]))
+    sig.r[t] <- (1 - isr0[t] + 0.001) * sig
+    Prec[t] <- 1 / (sig.r[t]^2)
+
+    r[t] ~ dlnorm(mu[t], Prec[t])
+    y[t] <- isr0[t] + (1 - isr0[t]) * r[t]
+  }
+
+  # Parameter transformations
+  sig <- 1 / sqrt(tau2)
+
+  # Priors on tau2 (variance) with user-specified hyperparameters df1, df2
+  tau2 ~ dgamma(df1, df2)
+  df1 ~ dexp(0.1)      # hyperprior, can be overridden in R code
+  df2 ~ dexp(0.1)
+
+  # Priors on beta parameters with tau2.beta variance
+  beta[1] ~ dnorm(0, tau2.beta)
+  beta[2] ~ dunif(-0.99, 0.99)
+
+  # Priors on alp and phi, phi uniform within user bounds
+  alp ~ dnorm(0, 0.25)
+  phi ~ dunif(phi_min, phi_max)  # phi_min and phi_max must be passed from R
+
+  # Prior on tau2.beta with user-specified hyperparameters nu1, nu2
+  tau2.beta ~ dgamma(nu1, nu2)
+  nu1 ~ dexp(0.1)
+  nu2 ~ dexp(0.1)
+
+  # Predictive distribution for r and y
+  for (t in 1:T) {
+    rP[t] ~ dlnorm(mu[t], Prec[t])
+    yP[t] <- isr0[t] + (1 - isr0[t]) * rP[t]
+  }
 }
