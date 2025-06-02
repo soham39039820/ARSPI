@@ -1,6 +1,9 @@
 # ARSPI
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://github.com/soham39039820/ARSPI/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/soham39039820/ARSPI/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/soham39039820/ARSPI/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/soham39039820/ARSPI/actions)
+
 
 **ARSPI** is an R package developed to compute the AutoRegressive Standardized Precipitation Index (ARSPI) using a Bayesian hierarchical model and analyze drought characteristics. The package allows users to evaluate drought events at various time scales, providing a comprehensive framework for understanding the frequency, intensity, and duration of droughts.
 

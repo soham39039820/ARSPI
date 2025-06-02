@@ -4,15 +4,57 @@
 \alias{arspi_estimate}
 \title{Compute ARSPI and Drought Characteristics}
 \usage{
-arspi_estimate(rainfall, scale, model_file = NULL)
+arspi_estimate(
+  rainfall,
+  scale,
+  df1_shape = 2,
+  df1_rate = 0.2,
+  df2_shape = 2,
+  df2_rate = 0.2,
+  tau2beta_shape = 2,
+  tau2beta_rate = 0.2,
+  nu1_rate = 0.1,
+  nu2_rate = 0.1,
+  phi_min = -0.99,
+  phi_max = 0.99,
+  model_file = NULL
+)
 }
 \arguments{
 \item{rainfall}{A numeric vector of monthly rainfall values.}
 
-\item{scale}{An integer indicating the scale (e.g., 3, 6, 12).}
+\item{scale}{An integer indicating the time scale (e.g., 3, 6, 12).}
+
+\item{df1_shape}{Description of df1_shape}
+
+\item{df1_rate}{Description of df1_rate}
+
+\item{df2_shape}{Description of df2_shape}
+
+\item{df2_rate}{Description of df2_rate}
+
+\item{tau2beta_shape}{Description of tau2beta_shape}
+
+\item{tau2beta_rate}{Description of tau2beta_rate}
+
+\item{nu1_rate}{Description of nu1_rate}
+
+\item{nu2_rate}{Description of nu2_rate}
+
+\item{phi_min}{Description of phi_min}
+
+\item{phi_max}{Description of phi_max}
+
+\item{model_file}{Optional path to a user-defined JAGS model file with prior specifications.
+If NULL, the default internal model is used.}
 }
 \value{
-A list containing ARSPI values and drought characteristics for each drought category.
+A list with three components:
+  \describe{
+    \item{ARSPI}{Numeric vector of ARSPI values.}
+    \item{Drought_Analysis}{List of drought characteristics for each category.}
+    \item{Summary}{Data frame summarizing drought characteristics.}
+  }
 }
 \description{
 Compute ARSPI and Drought Characteristics

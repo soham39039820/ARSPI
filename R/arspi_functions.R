@@ -5,6 +5,16 @@
 #' @param model_file Optional path to a user-defined JAGS model file with prior specifications.
 #'                   If NULL, the default internal model is used.
 #'
+#' @param df1_shape Description of df1_shape
+#' @param df1_rate Description of df1_rate
+#' @param df2_shape Description of df2_shape
+#' @param df2_rate Description of df2_rate
+#' @param tau2beta_shape Description of tau2beta_shape
+#' @param tau2beta_rate Description of tau2beta_rate
+#' @param nu1_rate Description of nu1_rate
+#' @param nu2_rate Description of nu2_rate
+#' @param phi_min Description of phi_min
+#' @param phi_max Description of phi_max
 #' @return A list with three components:
 #'   \describe{
 #'     \item{ARSPI}{Numeric vector of ARSPI values.}
