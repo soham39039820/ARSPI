@@ -43,15 +43,22 @@ arspi_estimate <- function(rainfall, scale,
   # Compute moving total rainfall (MTR)
   T_mtr <- length(rainfall)
   if (T_mtr < scale) stop("Rainfall series is shorter than the scale.")
-  mtr <- stats::filter(rainfall, rep(1, scale), sides = 1)
-  mtr <- mtr[!is.na(mtr)]
-  n <- length(mtr)
-  zero.ind <- as.numeric(mtr == 0)
+  mtr_raw <- stats::filter(rainfall, rep(1, scale), sides = 1)
+  mtr_raw <- mtr_raw[!is.na(mtr_raw)]
+  n <- length(mtr_raw)
+
+  # Store zero indicators
+  zero.ind <- as.numeric(mtr_raw == 0)
+
+  # For modeling only, replace zero rainfall with small positive value (to avoid log(0))
+  epsilon <- 0.01
+  mtr_model <- ifelse(mtr_raw == 0, epsilon, mtr_raw)
+
 
   # Prepare data list with priors
   jagsdata <- list(
     T = n - 2,
-    r = mtr[2:(n - 1)],
+    r = mtr_model[2:(n - 1)],
     isr0 = zero.ind[2:(n - 1)],
     df1_shape = df1_shape,
     df1_rate = df1_rate,
