@@ -45,6 +45,7 @@ arspi_estimate <- function(rainfall, scale,
   if (T_mtr < scale) stop("Rainfall series is shorter than the scale.")
   mtr_raw <- stats::filter(rainfall, rep(1, scale), sides = 1)
   mtr_raw <- mtr_raw[!is.na(mtr_raw)]
+  mtr <- mtr_raw
   n <- length(mtr_raw)
 
   # Store zero indicators
@@ -154,14 +155,7 @@ arspi_estimate <- function(rainfall, scale,
       Peak_Intensity = peak_intensity
     ))
   }
-  if (is.null(results.jgs) || is.null(results.jgs$BUGSoutput$sims.list$yP)) {
-    warning("Returning NA ARSPI values due to model failure.")
-    return(list(
-      ARSPI = rep(NA, length(mtr) - 2),
-      Drought_Analysis = NULL,
-      Summary = NULL
-    ))
-  }
+
 
   return(list(
     ARSPI = arspi,
