@@ -139,7 +139,7 @@ print(result$Summary)
 ```
 ### Version
 
-The current version of `beta4dist` is 0.1.1.
+The current version of `beta4dist` is 0.1.3.
 
 ### DATA REQUIREMENTS
 
