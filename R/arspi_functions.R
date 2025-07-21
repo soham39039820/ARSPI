@@ -154,6 +154,14 @@ arspi_estimate <- function(rainfall, scale,
       Peak_Intensity = peak_intensity
     ))
   }
+  if (is.null(results.jgs) || is.null(results.jgs$BUGSoutput$sims.list$yP)) {
+    warning("Returning NA ARSPI values due to model failure.")
+    return(list(
+      ARSPI = rep(NA, length(mtr) - 2),
+      Drought_Analysis = NULL,
+      Summary = NULL
+    ))
+  }
 
   return(list(
     ARSPI = arspi,
