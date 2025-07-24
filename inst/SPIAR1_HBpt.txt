@@ -1,55 +1,55 @@
 model {
-
+  # Constant for pi
   pi <- 3.141
 
-  # Likelihood for first observation
+  # Initial state
   isr0[1] ~ dbern(p[1])
-  logit(p[1]) <- alp / (1 - phi)
+  logit(p[1]) <- alpha / (1 - phi)
 
   mu[1] <- beta[1] / (1 - beta[2])
   sig.r[1] <- sig / (1 - beta[2]^2)
-  Prec[1] <- 1 / (sig.r[1]^2)
+  Prec[1] <- 1 / pow(sig.r[1], 2)
 
   r[1] ~ dlnorm(mu[1], Prec[1])
-  y[1] <- isr0[1] + (1 - isr0[1]) * r[1]
+  rP[1] ~ dlnorm(mu[1], Prec[1])
 
-  # Time series model for t = 2 to T
+  # Evolution for t = 2 to T
   for (t in 2:T) {
     isr0[t] ~ dbern(p[t])
-    logit(p[t]) <- alp + phi * (p[t - 1])
+    logit(p[t]) <- alpha + phi * logit(p[t - 1])
 
-    mu[t] <- (1 - isr0[t]) * (beta[1] + beta[2] * log(r[t - 1]))
-    sig.r[t] <- (1 - isr0[t] + 0.001) * sig
-    Prec[t] <- 1 / (sig.r[t]^2)
+    # Conditional log-normal only if not zero
+    mu[t] <- (1 - isr0[t]) * (beta[1] + beta[2] * log(max(r[t - 1], 0.01)))
+    sig.r[t] <- max((1 - isr0[t]) * sig, 0.05)
+    Prec[t] <- 1 / pow(sig.r[t], 2)
 
     r[t] ~ dlnorm(mu[t], Prec[t])
-    y[t] <- isr0[t] + (1 - isr0[t]) * r[t]
+    rP[t] ~ dlnorm(mu[t], Prec[t])
   }
 
-  # Parameter transformations
+  # === Priors ===
+
+  # sig ~ InvGamma(nu/2, nu/2)
   sig <- 1 / sqrt(tau2)
+  tau2 ~ dgamma(nu / 2, nu / 2)
+  nu ~ dexp(0.1)
 
-  # Priors on tau2 (variance) with user-specified hyperparameters df1, df2
-  tau2 ~ dgamma(df1, df2)
-  df1 ~ dexp(0.1)      # hyperprior, can be overridden in R code
-  df2 ~ dexp(0.1)
+  # beta[1] ~ N(0, sigma_beta^2), with sigma_beta ~ InvGamma
+  beta[1] ~ dnorm(0, tau2_beta)
+  tau2_beta <- pow(sigma_beta, -2)
+  sigma_beta ~ dgamma(tau2beta_shape, tau2beta_rate)
 
-  # Priors on beta parameters with tau2.beta variance
-  beta[1] ~ dnorm(0, tau2.beta)
+  # beta[2] ~ Uniform(-1, 1)
   beta[2] ~ dunif(-0.99, 0.99)
 
-  # Priors on alp and phi, phi uniform within user bounds
-  alp ~ dnorm(0, 0.25)
-  phi ~ dunif(phi_min, phi_max)  # phi_min and phi_max must be passed from R
+  # alpha ~ N(0, 0.25)
+  alpha ~ dnorm(0, 0.25)
 
-  # Prior on tau2.beta with user-specified hyperparameters nu1, nu2
-  tau2.beta ~ dgamma(nu1, nu2)
-  nu1 ~ dexp(0.1)
-  nu2 ~ dexp(0.1)
+  # phi ~ Uniform(-1, 1)
+  phi ~ dunif(phi_min, phi_max)
 
-  # Predictive distribution for r and y
-  for (t in 1:T) {
-    rP[t] ~ dlnorm(mu[t], Prec[t])
-    yP[t] <- isr0[t] + (1 - isr0[t]) * rP[t]
-  }
+  # Additional priors for hyperparameters (optional, not used directly)
+  # These can be defined externally if required:
+  # nu1 ~ dexp(0.1)
+  # nu2 ~ dexp(0.1)
 }
