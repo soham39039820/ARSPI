@@ -1,16 +1,23 @@
 Package: ARSPI
 Type: Package
 Title: ARSPI - A Tool for Estimating AutoRegressive SPI and Drought Characteristics
-Version: 0.1.1
+Version: 0.2.0
 Authors@R: person("Soham", "Ghosh", email = "phd2001161004@iiti.ac.in", role = c("aut", "cre"))
-Description: Provides tools to estimate the AutoRegressive Standardized Precipitation Index (ARSPI) using a Bayesian hierarchical model with MCMC via JAGS. Includes functions to classify and analyze drought characteristics (mild, moderate, severe, extreme) and supports custom prior specification. Useful for hydroclimatic risk analysis and drought monitoring at different time scales.
+Description: Provides tools to estimate the AutoRegressive Standardized Precipitation Index (ARSPI)
+    using a Bayesian hierarchical model with MCMC via JAGS. Also includes tools to evaluate and analyze 
+    drought characteristics including duration, severity, intensity, and agreement with standard SPI 
+    using the Integrated Drought Classification Matrix (IDCM), Drought Impact Proportion (DIP), and 
+    categorical summaries. Useful for hydroclimatic risk analysis and drought monitoring at various time scales.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: false
+LazyData: true
 RoxygenNote: 7.3.2
 Imports:
     R2jags,
-    stats
+    stats,
+    zoo,
+    SPEI
 Suggests:
     testthat
+
 
