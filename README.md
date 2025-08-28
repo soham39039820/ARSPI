@@ -146,9 +146,60 @@ result <- computeARSPI(
 cat("ARSPI values:\n")
 print(result$arspi)
 ```
+### Extracting Drought characteristics for different drought categories
+
+This step extracts drought characteristics for each severity category, allowing users to summarize duration, intensity, and frequency of drought events for easy interpretation and further analysis.
+
+```R
+# Extract ARSPI index
+arspi_values <- result$arspi
+# Run drought summary
+drought_summary <- summarize_drought_events(arspi_values)
+
+# Print summary
+cat("Summary of Drought Events (based on ARSPI):\n")
+print(drought_summary$summary)
+
+# Print details for one category (optional)
+cat("\nExtreme Drought Event Details:\n")
+print(drought_summary$details$Extreme)
+```
+
+### Drought Intensity Propagator (DIP)
+
+This module quantifies how drought intensity captured by ARSPI propagates to downstream indicators (e.g., vegetation stress).  
+It identifies drought events, computes integrated intensities, and calculates the DIP ratio per event for impact assessment.
+
+```R
+# Create target index
+target <- -0.3 * arspi_values + rnorm(length(ars), 0, 0.2)
+# Compute DIP
+DIP_sim<-compute_DIP(arspi_values, target, thr = -1, min_dur = 2)
+# Print DIP
+print(DIP_sim$DIP)
+```
+### Innovative Drought Characterization Matrix (IDCM)
+
+This module evaluates the stability and consistency of ARSPI-based drought classifications over a user-specified reference period.  
+It produces an 8*8 Innovative drought characterisation matrix and calculates statistical metrics to benchmark ARSPI reproducibility across multiple drought categories.
+```R
+# Run IDCM computation
+idcm_result <- compute_IDCM(
+rainfall = rainfall_series,
+scale = 6,
+ref_years = 10,
+model_file = model_file_path)
+# Display outputs
+cat("\n==== Innovative Drought Characterization Matrix (IDCM) ====\n")
+print(idcm_result$IDCM)
+cat("\n==== Metrics ====\n")
+print(idcm_result$Metrics)
+cat("\nNumber of overlapping months used:", idcm_result$Metrics$N, "\n")
+```
+
 ### Version
 
-The current version of `ARSPI` is 0.1.4.
+The current version of `ARSPI` is 0.1.5.
 
 ### DATA REQUIREMENTS
 
