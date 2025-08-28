@@ -67,34 +67,50 @@ After installation, you can load the package and run an example ARSPI analysis:
 # Load the ARSPI package
 library(ARSPI)
 
-# Load sample rainfall data provided with the package
-csv_path <- system.file("extdata", "rainfall_sample_data.csv", package = "ARSPI")
-rainfall_data <- read.csv(csv_path, header = TRUE)
-
-# Extract rainfall time series (e.g., 360 monthly values)
-rainfall_series <- rainfall_data[, 2]
-
-# Specify the path to the JAGS model file
-model_file_path <- system.file("SPIAR1_HBpt.txt", package = "ARSPI")
-
-# Estimate ARSPI and analyze drought characteristics
-result <- arspi_estimate(
-  rainfall = rainfall_series,
-  scale = 6,
-  model_file = model_file_path
+# Load sample rainfall data included with the package
+rainfall_url<-"https://raw.githubusercontent.com/soham39039820/ARSPI/master/inst/extdata/rainfall_sample_data.csv"
+model_url <- "https://raw.githubusercontent.com/soham39039820/ARSPI/master/inst/SPIAR1_HBpt.txt"
+# Download rainfall data
+rainfall_data <- tryCatch(
+    read.csv(rainfall_url, header = TRUE),
+    error = function(e) stop("Failed to load rainfall data from GitHub.")
 )
+if (nrow(rainfall_data) < 360) stop("Insufficient data length.")
+rainfall_series <- rainfall_data[1:360, 2]
 
-# Display ARSPI values
-cat("ARSPI values:\n")
-print(result$ARSPI)
+# Download JAGS model file to a temporary location
+model_file_path <- tempfile(fileext = ".txt")
+download.file(model_url, destfile = model_file_path, quiet = TRUE)
 
-# Display drought characteristics for each category
-cat("Detailed Drought Characteristics:\n")
-print(result$Drought_Analysis)
-
-# Display summary of drought events
-cat("Summary of Drought Events:\n")
-print(result$Summary)
+# Run ARSPI model
+result <- computeARSPI(
+    rainfall = rainfall_series,
+    scale = 6,
+    model_file = model_file_path,
+    n.burnin = 1000,
+    n.iter = 10000,
+    n.thin = 2,
+    n.chains = 3,
+    use_parallel = TRUE
+)
+# Extract ARSPI index
+print(result$arspi)
+# Display JAGS output
+print(result$BUGSoutput)
+# Summary statistics of all parameters
+summary(result$BUGSoutput$summary)
+#Plot trace plots and posterior densities for parameters
+plot(result$BUGSoutput)
+#Access PSRF (Gelman-Rubin diagnostics)
+psrf_values <- result$BUGSoutput$summary[, "Rhat"]
+print(psrf_values)
+# Optionally, identify parameters with poor convergence (Rhat > 1.1)
+non_converged_params <- names(psrf_values[psrf_values > 1.1])
+if (length(non_converged_params) > 0) {
+ message("Parameters with potential convergence issues: ", paste(non_converged_params, collapse = ", "))
+} else {
+ message("All parameters have converged (Rhat <= 1.1)")
+}
 ```
 ### Example with Custom User-Specified Priors
 
@@ -110,10 +126,10 @@ user_priors <- list(
 )
 
 # Run ARSPI estimation with custom priors
-result <- arspi_estimate(
-  rainfall = rainfall_series,
-  scale = 6,
-  model_file = model_file_path,
+result <- computeARSPI(
+    rainfall = rainfall_series,
+    scale = 6,
+    model_file = model_file_path,
   df1_shape = user_priors$df1_shape,
   df1_rate = user_priors$df1_rate,
   df2_shape = user_priors$df2_shape,
@@ -128,18 +144,11 @@ result <- arspi_estimate(
 
 # View results
 cat("ARSPI values:\n")
-print(result$ARSPI)
-
-cat("Detailed Drought Characteristics:\n")
-print(result$Drought_Analysis)
-
-cat("Summary of Drought Events:\n")
-print(result$Summary)
-
+print(result$arspi)
 ```
 ### Version
 
-The current version of `beta4dist` is 0.1.3.
+The current version of `ARSPI` is 0.1.4.
 
 ### DATA REQUIREMENTS
 
